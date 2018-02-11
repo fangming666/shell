@@ -40,6 +40,7 @@
         Y: "",
         domArr: [],
         domArr2: [],
+        domArr3: [],
         domIndex: ""
 
       }
@@ -77,27 +78,18 @@
       downDom(itemS){
         this.cloneDom = jquery(`.${itemS}`).first().clone(false).addClass("activeInfoItem");
         this.domArr.push(this.cloneDom.text()); //克隆出的对象方法在此数组里
-//        jquery(".programme").append(this.cloneDom);
-//        this.mouseResult = true;
-
-//        console.log(this.domArr[0], this.cloneDom.text());
-//        if (this.domArr2.length == 0) {
-//          this.domArr2.push(this.cloneDom); //克隆出的对象方法在此数组里
-//          jquery(".programme").append(this.cloneDom);
-//          this.mouseResult = true;
-//        } else {
-        console.log(this.domArr2.indexOf(this.cloneDom.text()));
-//          for (let i = 0; i < this.domArr.length; i++) {
-        if (this.domArr2.indexOf(this.cloneDom.text()) == -1) {
+        if (this.domArr3.indexOf(this.cloneDom.text()) == -1) {
           this.domArr2.push(this.cloneDom); //克隆出的对象方法在此数组里
+          this.domArr3.push(this.cloneDom.text());
           jquery(".programme").append(this.cloneDom);
           this.mouseResult = true;
-          console.log(this.domArr2.length)
-//            }
-        }
-//        }
+          this.domArr3.map((item) => {
+            console.log(jquery(item).text())
+          });
 
-//        console.log(this.domArr.indexOf(this.cloneDom),this.domArr2.length);
+        }
+
+
 
       },
       //大的父div上的鼠标移动事件
