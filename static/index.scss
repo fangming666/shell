@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.programme{
+  position: relative;
+  width: 100%;
+  height: 650px;
+  box-sizing: border-box;
+  border: 1px solid lightgrey;
+}
+
+
+.date {
+  position: absolute;
+  left: 50px;
+  top: 0;
+  user-select: none;
+}
+
+.date-table {
+
+  td {
+    width: 120px;
+    height: 100px;
+    border: 1px solid lightgrey;
+  }
+  tr {
+    td {
+      border-right: 0;
+      border-bottom: 0;
+      text-align: center;
+    }
+    td:last-child {
+      border-right: 1px solid lightgrey;
+    }
+    &:last-child {
+      td {
+        border-bottom: 1px solid lightgrey;
+      }
+    }
+  }
+}
+
+.date-title {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.activeDay {
+  background-color: greenyellow;
+}
+
+.nowDay {
+  background-color: red !important;
+}
+
+.info {
+  width: 100px;
+  height: 500px;
+  overflow: auto;
+  position: absolute;
+  right: 50px;
+  top: 142px;
+  border: 1px solid lightgrey;
+  li {
+    user-select: none;
+    list-style: none;
+
+  }
+}
+.infoItem{
+  width: 80px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  background-color: red;
+  color: white;
+  border-radius: 15px;
+  cursor: pointer;
+  margin: 10px auto;
+}
+.activeInfoItem{
+  user-select: none;
+  position: absolute;
+  display: none;
+}
