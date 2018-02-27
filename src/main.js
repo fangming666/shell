@@ -6,12 +6,12 @@ import router from './router'
 import axios from "axios"
 import store from "./vuex/store.js"
 Vue.config.productionTip = false;
-Vue.prototype.$axios = axios;
+Vue.prototype.$ajax = axios;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
+  components: {App},
   template: '<App/>'
 });

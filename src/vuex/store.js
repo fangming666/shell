@@ -3,14 +3,25 @@
  */
 import vue from "vue";
 import vueX from "vuex";
+import * as actions from "./action";
 
 vue.use(vueX);
 
-//获取当月有几天
 
 const state = {
-  nowDate : new Date(),
+  infoData: []
+};
+const mutations = {
+  //获取后台传过来的数据
+  LIST_INFO(state,item){
+    state.infoData = item.data.all
+  },
+  ERROR(){
+    alert("获取信息失败")
+  }
 };
 export default new vueX.Store({
-  state
+  state,
+  mutations,
+  actions
 })

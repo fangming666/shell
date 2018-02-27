@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+  <style>
+    .test_box {
+      width: 45%;
+      float: left;
+      margin-right: 1%;
+      background-color: #f0f3f9;
+    }
+
+    .mb-200 {
+      margin-bottom: -200px;
+    }
+
+    .va-200 {
+      vertical-align: -200px;
+    }
+
+    img {
+      width: 100%;
+    }
+
+    div {
+      width: 100px;
+      height: 200px;
+    }
+    summary {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      outline: 0;
+    }
+  </style>
+</head>
+<body>
+<!--<div class="test_box">-->
+<!--<img src="http://image.zhangxinxu.com/image/study/s/s128/mm1.jpg" class="mb-200" />张含韵-->
+<!--</div>-->
+<!--<div class="test_box">-->
+<!--<img src="http://image.zhangxinxu.com/image/study/s/s128/mm1.jpg" class="va-200" />张含韵-->
+<!--</div>-->
+<!--<i class="fa fa-times"></i>-->
+<!--<img src="./tst.jpg" alt="tst">-->
+<details>
+  <summary>这是摘要1</summary>
+  <p>这里具体描述，标签相对随意，例如这里使用的&lt;p&gt;标签。</p>
+</details>
+<div class="date-hei"></div>
+<span></span>
+</body>
+<script src="http://g.ydbcdn.com/jquery/latest/jquery.min.js"></script>
+<script>
+//  console.log($(".date-hei").height());
+//  console.log($(".date-hei"));
+//  String.prototype.visualLength = function () {
+//    let ruler = $("span");
+//    ruler.text(this);
+//    return ruler[0].offsetWidth;
+//  };
+//  let text = "11、1";
+//  console.log(text.visualLength());
+    let arr = [{"all": 1,"name":"a"}, {"all": 2,"name":"b"}, {"all": 3,"name":"c"}, {"all": 4,"name":"d"}, {"all": 1,"name":"e"}];
+    let hash = {};
+    arr = arr.reduce((item, next) => {
+      hash[next.all] ? "" : hash[next.all] = true && item.push(next);
+      return item
+    }, []);
+    console.log(arr);
+
+    $(() => {
+      $.ajax({
+        type: "GET",
+        url: "http://fm.xiaofany.com/programme.php",
+        success: function (data) {
+  //        console.log(JSON.parse(data))
+        }
+      })
+    });
+//  let obj = {"name": "tom", "age": 18};
+//  with (obj) {
+//    var testName = name;
+//    var testAge = age
+//  }
+//  console.log(testName)
+
+</script>
+</html>
