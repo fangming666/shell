@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    summary {
+      outline: none;
+      user-select: none;
+    }
+
+    .dom1 summary {
+      width: -moz-fit-content;
+      width: fit-content;
+      direction: rtl;
+    }
+
+    .dom1 ::-webkit-details-marker {
+      direction: ltr;
+      color: gray;
+      margin-left: .5ch;
+    }
+
+    .dom1 ::-moz-list-bullet {
+      direction: ltr;
+      color: gray;
+      margin-left: .5ch;
+    }
+
+    .dom2 ::-webkit-details-marker {
+      display: none;
+    }
+
+    .dom2 ::-moz-list-bullet {
+      font-size: 0;
+    }
+
+    .dom2 summary::after {
+      content: '';
+      position: absolute;
+      width: 1em;
+      height: 1em;
+      margin: .2em 0 0 .5ch;
+      background: url("http://www.zhangxinxu.com/study/201801/arrow-on.svg") no-repeat;
+      background-size: 100% 100%;
+      transition: transform .2s;
+    }
+
+    .dom2:not([open]) summary::after {
+      margin-top: .25em;
+      transform: rotate(90deg);
+    }
+
+    .dom3 ::-webkit-details-marker {
+      display: none;
+    }
+
+    .dom3 ::-moz-list-bullet {
+      font-size: 0;
+    }
+
+    .dom3 summary {
+      user-select: none;
+      outline: none;
+    }
+
+    .more {
+      display: none;
+    }
+
+    .dom3[open] .more {
+      display: block;
+    }
+
+    .dom3[open] summary a {
+      font-size: 0;
+    }
+
+    .dom3[open] summary a::before {
+      content: "收起";
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<details class="dom1">
+  <summary>标题</summary>
+  <p>这里是内容区域</p>
+</details>
+<details class="dom2">
+  <summary>自定义图标</summary>
+  <p>这是内容的区域</p>
+</details>
+<details class="dom3">
+  <summary>
+    <p>
+      据台媒报道，大陆歌手大壮的《我们不一样》近来攻占了台湾KTV排行榜冠军，在榜单上排名超过张惠妹、林俊杰的新歌名次。台湾网友评论称，太好听了，一听马上就停不下来。除了《我们不一样》外，这几首你一定听过的歌，也受到台湾歌迷的青睐。</p>
+    <div class="more">
+      <p>其他几首歌曲包括歌舞剧演员李玉刚的《刚好遇见你》以及王俊琪的《我多喜欢你你会知道》。</p>
+    </div>
+    <a>更多</a>
+  </summary>
+
+
+</details>
+</body>
+</html>

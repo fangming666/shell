@@ -115,6 +115,8 @@
   border: 1px solid lightgrey;
   border-bottom: 0;
   text-align: left;
+  user-select: none;
+
 }
 
 .infoItem {
@@ -129,7 +131,7 @@
   margin: 10px;
   position: relative;
 
-  i {
+  .close {
     display: none;
     position: absolute;
     right: 4px;
@@ -143,7 +145,7 @@
   position: absolute;
   display: none;
   //transition: all .6s;
-  &:hover > i {
+  &:hover > .close {
     display: block;
   }
 }

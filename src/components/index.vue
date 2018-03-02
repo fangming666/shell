@@ -17,7 +17,7 @@
         ul
           li(v-for="(item,index) in infoDataS")
             div.infoItem(:class="infoItem(index)", :data-name = "infoItem(index)", @mousedown="downDom(infoItem(index))") {{item}}
-              i(class=["fa", "fa-times"], @click.stop="delDom")
+              <!--i(class=["fa", "close", "fa-times"], @click.stop="delDom")-->
         button.save-data(@click = "saveDataS") 保存
 </template>
 
@@ -51,12 +51,13 @@
         ArrJson: {"left": "", "top": "", "stamp": ""},
         saveJson: {},
         saveDom: [],
-        saveResult: {},
+        saveResult: {"data": ""},
         boxWidth: "",
         boxHeight: 100,
         nowDate: "",
         resultData: "",
         subNum: 0,
+        scrollW: 0,
         initLeft: 0, //200
         initTop: 0 //66
       }
@@ -82,6 +83,9 @@
         this.range()
       });
 
+      jquery(".close").on("click", () => {
+        console.log(321);
+      });
 
       //执行ajax的方法
       this.getAjaxS().then(() => {
@@ -89,9 +93,11 @@
           JSON.parse(localStorage.ArrData).data.map((item) => {
             let initDom = "";
             initDom = jquery(`.${item.Dom}`).first().clone(false).addClass("activeInfoItem").css({
-              "left": `${item.position.left}px`,
+              "left": `${this.boxWidth * item.seam + this.boxWidth / 2 - 50}px`,
               "top": `${item.position.top}px`
             });
+
+
             initDom.css("display", "block");
             initDom.attr("data-stamp", item.stamp);
             jquery(".programme").append(initDom);
@@ -137,7 +143,7 @@
       //鼠标点击右边元素的时候进行的复制操作，开关（操作是否进行移动，mouseResult）打开
       downDom(itemS)
       {
-        this.cloneDom = jquery(`.${itemS}`).first().clone(false).addClass("activeInfoItem");
+        this.cloneDom = jquery(`.${itemS}`).first().clone(false).addClass("activeInfoItem").attr("data-pre", "false");
         this.domArr2.push(this.cloneDom); //克隆出的对象方法在此数组里
         jquery(".programme").append(this.cloneDom);
         this.mouseResult = true;
@@ -199,12 +205,25 @@
       {
         if (this.mouseResult) {
           if (this.X >= (jquery(".date").width() + this.initLeft + 20) || this.Y >= jquery(".programme").height() + this.initTop + 20) {
+            this.cloneDom.attr("data-pre", "true");
+            if (localStorage.ArrData) {
+              let newObj = JSON.parse(localStorage.ArrData);
+              for (let i = 0; i < newObj.data.length; i++) {
+                if (this.cloneDom.attr("data-stamp") == newObj.data[i].stamp) {
+                  newObj.data[i].pre = "true"
+                }
+              }
+              localStorage.ArrData = JSON.stringify(newObj);
+            }
             this.domArr2 = this.domArr2.splice(this.domArr2.indexOf(this.cloneDom) - 1, this.domArr2.indexOf(this.cloneDom));
             this.cloneDom.remove();
           } else {
             this.floorX = Math.floor((this.X - 60 - this.initLeft) / this.boxWidth) > 6 ? 6 : Math.floor((this.X - 60 - this.initLeft) / this.boxWidth);
             this.floorY = Math.ceil((this.Y - 89 - this.initTop) / this.boxHeight) > 5 ? 5 : Math.ceil((this.Y - 89 - this.initTop) / this.boxHeight);
-            this.ArrJson = {"left": this.boxWidth * this.floorX + 60, "top": this.boxHeight * this.floorY - 30};
+            this.ArrJson = {
+              "left": this.boxWidth * this.floorX + this.boxWidth / 2 - 50,
+              "top": this.boxHeight * this.floorY - 30
+            };
 //            console.log(this.ArrJson);
             this.ArrPosition.map((item) => {
               if (this.ArrJson.left == item.left && this.ArrJson.top == item.top) {
@@ -218,6 +237,7 @@
             });
             setTimeout(() => {
               this.cloneDom.animate({"left": this.ArrJson.left, "top": this.ArrJson.top}).show();
+              this.cloneDom.attr("data-seam", this.floorX)
             }, 200);
             this.ArrPosition.push(this.ArrJson);
           }
@@ -245,6 +265,8 @@
             this.saveJson.position = {"left": item.css("left").split("px")[0], "top": item.css("top").split("px")[0]};
             this.saveJson.Dom = item.attr("data-name");
             this.saveJson.stamp = item.attr("data-stamp");
+            this.saveJson.seam = item.attr("data-seam");
+            this.saveJson.pre = item.attr("data-pre");
             this.saveDom.push(this.saveJson);
           }
         );
@@ -254,10 +276,18 @@
           hash[next.stamp] ? "" : hash[next.stamp] = true && item.push(next);
           return item
         }, []);
-        this.saveResult = {"data": this.saveDom};
+        this.saveResult.data = this.saveDom;
         localStorage.ArrData = JSON.stringify(this.saveResult);
-      }
-      ,
+
+        //删除离线存储里面data-pre是“true”的部分
+        let preObj = JSON.parse(localStorage.ArrData);
+        preObj.data.map((item, index) => {
+          if (item.pre == "true") {
+            preObj.data.splice(index, 1)
+          }
+        });
+        localStorage.ArrData = JSON.stringify(preObj);
+      },
 
       //ajax获取后台数据
       getAjaxS()
