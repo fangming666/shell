@@ -13,8 +13,9 @@ const state = {
 };
 const mutations = {
   //获取后台传过来的数据
-  LIST_INFO(state,item){
-    state.infoData = item.data.all
+  LIST_INFO(state, item){
+    state.infoData = item.data
+    // state.infoData = item.data.all
   },
   ERROR(){
     alert("获取信息失败")

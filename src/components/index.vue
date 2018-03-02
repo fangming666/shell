@@ -16,7 +16,8 @@
         div.info-title 名字
         ul
           li(v-for="(item,index) in infoDataS")
-            div.infoItem(:class="infoItem(index)", :data-name = "infoItem(index)", @mousedown="downDom(infoItem(index))") {{item}}
+            div.infoItem(:class="infoItem(index)", :data-name = "infoItem(index)", @mousedown="downDom(infoItem(index))")
+              span {{item.name}}
               <!--i(class=["fa", "close", "fa-times"], @click.stop="delDom")-->
         button.save-data(@click = "saveDataS") 保存
 </template>
@@ -292,7 +293,8 @@
       //ajax获取后台数据
       getAjaxS()
       {
-        let url = "http://fm.xiaofany.com/programme.php";
+//        let url = "http://fm.xiaofany.com/programme.php";
+        let url = "http://localhost:3000/assistantList";
         return this.getDataS(url).then(() => {
           this.infoDataS = this.infoData;
         })
