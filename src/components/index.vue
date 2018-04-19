@@ -25,8 +25,9 @@
 <script>
   import jquery from "jquery";
   import {mapActions, mapState} from "vuex";
-  export default{
-    data(){
+
+  export default {
+    data() {
       return {
         trNum: [],
         tdNum: [],
@@ -63,7 +64,7 @@
         initTop: 0 //66
       }
     },
-    mounted(){
+    mounted() {
       this.trNum.length = 5;
       this.tdNum.length = 7;
       let date = new Date();
@@ -127,23 +128,22 @@
     },
     methods: {
       ...mapActions(["getDataS"]),
-      actDate(index, index2){
+      actDate(index, index2) {
         if ((+this.nowDay + this.firstData - 1) == (index * 7 + index2)) {
           return "nowDay"
         } else if ((index == 0 && index2 >= this.firstData) || ((index > 0) && ((index * 7) + index2 < (+this.firstData + this.allDay)))) {
           return "activeDay"
         }
       },
-      infoItem(index){
+      infoItem(index) {
         return `infoItem${index}`
       },
-      range(){
+      range() {
         this.boxWidth = jquery(".date-table td").outerWidth();
         this.subNum = jquery(".programme").width() - jquery(".date").width() - jquery(".info").width();
       },
       //鼠标点击右边元素的时候进行的复制操作，开关（操作是否进行移动，mouseResult）打开
-      downDom(itemS)
-      {
+      downDom(itemS) {
         this.cloneDom = jquery(`.${itemS}`).first().clone(false).addClass("activeInfoItem").attr("data-pre", "false");
         this.domArr2.push(this.cloneDom); //克隆出的对象方法在此数组里
         jquery(".programme").append(this.cloneDom);
@@ -152,8 +152,7 @@
       }
       ,
       //大的父div上的鼠标移动事件
-      moveDom(domS)
-      {
+      moveDom(domS) {
         //鼠标的坐标
         this.X = event.clientX;
         this.Y = event.clientY;
@@ -170,12 +169,15 @@
               this.mouseResult2 = true;
               this.mouseResult = true;
               this.domIndex = index;
-              if (jquery(e.target).hasClass("infoItem")) {
-                this.cloneDom = jquery(e.target);
+              console.log(jquery(e.target));
+              let eventDom = (jquery(e.target).hasClass("infoItem") ? jquery(e.target) : jquery(e.target).parents(".infoItem"));
+              if (eventDom.hasClass("infoItem")) {
+                this.cloneDom = eventDom;
                 this.ArrPosition.map((item, index) => {
                   if (item.stamp == this.cloneDom.attr("data-stamp")) {
                     console.log(this.cloneDom.attr("data-stamp"));
                     this.ArrPosition.splice(index, 1);
+
                   }
                 });
               }
@@ -202,8 +204,7 @@
       ,
 
       //大div上的鼠标松开事件，关闭开关，使其无法无法移动
-      upDom()
-      {
+      upDom() {
         if (this.mouseResult) {
           if (this.X >= (jquery(".date").width() + this.initLeft + 20) || this.Y >= jquery(".programme").height() + this.initTop + 20) {
             this.cloneDom.attr("data-pre", "true");
@@ -225,11 +226,10 @@
               "left": this.boxWidth * this.floorX + this.boxWidth / 2 - 50,
               "top": this.boxHeight * this.floorY - 30
             };
-//            console.log(this.ArrJson);
             this.ArrPosition.map((item) => {
               if (this.ArrJson.left == item.left && this.ArrJson.top == item.top) {
                 this.ArrJson.top = +item.top + 30;
-                if (this.ArrJson.top >= this.boxHeight * (this.floorY ) + 40) {
+                if (this.ArrJson.top >= this.boxHeight * (this.floorY) + 40) {
                   this.domArr2 = this.domArr2.splice(this.domArr2.indexOf(this.cloneDom) - 1, this.domArr2.indexOf(this.cloneDom));
                   this.cloneDom.remove();
                 }
@@ -254,8 +254,7 @@
 
 
       //点击保存进行保存数据
-      saveDataS()
-      {
+      saveDataS() {
         if (localStorage.ArrData) {
           this.saveDom = JSON.parse(localStorage.ArrData).data;
         } else {
@@ -291,8 +290,7 @@
       },
 
       //ajax获取后台数据
-      getAjaxS()
-      {
+      getAjaxS() {
 //        let url = "http://fm.xiaofany.com/programme.php";
         let url = "http://localhost:3000/assistantList";
         return this.getDataS(url).then(() => {
@@ -303,8 +301,7 @@
 
 
       //删除复制出来的dom元素
-      delDom()
-      {
+      delDom() {
         console.log(123);
       }
     },
