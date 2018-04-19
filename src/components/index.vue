@@ -18,7 +18,7 @@
           li(v-for="(item,index) in infoDataS")
             div.infoItem(:class="infoItem(index)", :data-name = "infoItem(index)", @mousedown="downDom(infoItem(index))")
               span {{item.name}}
-              <!--i(class=["fa", "close", "fa-times"], @click.stop="delDom")-->
+              <!--i(class=["fa", "close", "fa-times"], @click.self="delDom")-->
         button.save-data(@click = "saveDataS") 保存
 </template>
 
@@ -85,9 +85,6 @@
         this.range()
       });
 
-      jquery(".close").on("click", () => {
-        console.log(321);
-      });
 
       //执行ajax的方法
       this.getAjaxS().then(() => {
@@ -98,17 +95,17 @@
               "left": `${this.boxWidth * item.seam + this.boxWidth / 2 - 50}px`,
               "top": `${item.position.top}px`
             });
-
+            initDom.attr("data-stampInit", item.stamp);
+            /**把删除的节点添加到克隆出来的节点当中**/
+            jquery("<i class='fa close fa-times'><i/>").appendTo(initDom);
 
             initDom.css("display", "block");
-            initDom.attr("data-stamp", item.stamp);
             jquery(".programme").append(initDom);
             this.domArr2.push(initDom);
             this.saveJson.left = +item.position.left;
             this.saveJson.top = +item.position.top;
             this.saveJson.stamp = +item.stamp;
             this.ArrPosition.push(this.saveJson);
-//            console.log(this.ArrPosition);
             initDom.on("mousedown", () => {
               this.mouseResult = true;
               this.cloneDom = initDom;
@@ -119,7 +116,29 @@
               });
             });
             this.saveJson = {};
+            /**删除按钮的点击事件**/
+            initDom.find(".fa").on("click", (e) => {
+              console.log(initDom.attr("data-stamp"), item.stamp);
+              e.stopPropagation();
+              initDom.attr("data-pre", "true");
+              if (localStorage.ArrData) {
+                let newObj = JSON.parse(localStorage.ArrData);
+                for (let i = 0; i < newObj.data.length; i++) {
+                  if (initDom.attr("data-stampInit") == newObj.data[i].stamp) {
+                    newObj.data[i].pre = "true"
+                  }
+                }
+                localStorage.ArrData = JSON.stringify(newObj);
+              }
+              this.domArr2 = this.domArr2.splice(this.domArr2.indexOf(this.cloneDom) - 1, this.domArr2.indexOf(this.cloneDom));
+              initDom.remove();
+              this.ArrPosition.map((item, index) => {
+                if (item.stamp == this.cloneDom.attr("data-stamp")) {
+                  this.ArrPosition.splice(index, 1);
 
+                }
+              });
+            });
           });
 
         }
@@ -148,6 +167,30 @@
         this.domArr2.push(this.cloneDom); //克隆出的对象方法在此数组里
         jquery(".programme").append(this.cloneDom);
         this.mouseResult = true;
+        /**把删除的节点添加到克隆出来的节点当中**/
+        jquery("<i class='fa close fa-times'><i/>").appendTo(this.cloneDom);
+        /**删除按钮的点击事件**/
+        this.cloneDom.find(".fa").on("click", (e) => {
+          e.stopPropagation();
+          this.cloneDom.attr("data-pre", "true");
+          if (localStorage.ArrData) {
+            let newObj = JSON.parse(localStorage.ArrData);
+            for (let i = 0; i < newObj.data.length; i++) {
+              if (this.cloneDom.attr("data-stamp") == newObj.data[i].stamp) {
+                newObj.data[i].pre = "true"
+              }
+            }
+            localStorage.ArrData = JSON.stringify(newObj);
+          }
+          this.domArr2 = this.domArr2.splice(this.domArr2.indexOf(this.cloneDom) - 1, this.domArr2.indexOf(this.cloneDom));
+          this.cloneDom.remove();
+          this.ArrPosition.map((item, index) => {
+            if (item.stamp == this.cloneDom.attr("data-stamp")) {
+              this.ArrPosition.splice(index, 1);
+
+            }
+          });
+        });
         return false;
       }
       ,
@@ -169,13 +212,11 @@
               this.mouseResult2 = true;
               this.mouseResult = true;
               this.domIndex = index;
-              console.log(jquery(e.target));
               let eventDom = (jquery(e.target).hasClass("infoItem") ? jquery(e.target) : jquery(e.target).parents(".infoItem"));
               if (eventDom.hasClass("infoItem")) {
                 this.cloneDom = eventDom;
                 this.ArrPosition.map((item, index) => {
                   if (item.stamp == this.cloneDom.attr("data-stamp")) {
-                    console.log(this.cloneDom.attr("data-stamp"));
                     this.ArrPosition.splice(index, 1);
 
                   }
@@ -211,7 +252,7 @@
             if (localStorage.ArrData) {
               let newObj = JSON.parse(localStorage.ArrData);
               for (let i = 0; i < newObj.data.length; i++) {
-                if (this.cloneDom.attr("data-stamp") == newObj.data[i].stamp) {
+                if (this.cloneDom.attr("data-stamp") == newObj.data[i].stamp || this.cloneDom.attr("data-stampInit") == newObj.data[i].stamp) {
                   newObj.data[i].pre = "true"
                 }
               }
@@ -300,10 +341,6 @@
       ,
 
 
-      //删除复制出来的dom元素
-      delDom() {
-        console.log(123);
-      }
     },
     computed: {
       ...
