@@ -10,15 +10,12 @@
             td.date-hig( v-for="(item,index2) in tdNum", :class="actDate(index,index2)")
               span(v-if="index==0&&index2<firstData") {{propDay[index2]}}
               span(v-else-if="(index==0&&index2>=firstData) ||((index > 0)&&((index*7)+index2<(+firstData+allDay)))")  {{index*7+index2-firstData+1}}
-              <!--span(v-else-if="index == 4") {{(7*(index+1)-allDay-firstData)-index2+1>=0?7*(index+1)-allDay-firstData)-index2+1}}-->
-
       div.info
         div.info-title 名字
         ul
           li(v-for="(item,index) in infoDataS")
             div.infoItem(:class="infoItem(index)", :data-name = "infoItem(index)", @mousedown="downDom(infoItem(index))")
               span {{item.name}}
-              <!--i(class=["fa", "close", "fa-times"], @click.self="delDom")-->
         button.save-data(@click = "saveDataS") 保存
 </template>
 
@@ -88,6 +85,7 @@
 
       //执行ajax的方法
       this.getAjaxS().then(() => {
+        console.log(!localStorage.ArrData);
         if (localStorage.ArrData) {
           JSON.parse(localStorage.ArrData).data.map((item) => {
             let initDom = "";
@@ -96,12 +94,11 @@
               "top": `${item.position.top}px`
             });
             initDom.attr("data-stampInit", item.stamp);
-            /**把删除的节点添加到克隆出来的节点当中**/
-            jquery("<i class='fa close fa-times'><i/>").appendTo(initDom);
-
+            initDom.attr("data-pre", "false");
             initDom.css("display", "block");
             jquery(".programme").append(initDom);
             this.domArr2.push(initDom);
+            /**把缓存里面的元素取出来然后放在位置的array里面**/
             this.saveJson.left = +item.position.left;
             this.saveJson.top = +item.position.top;
             this.saveJson.stamp = +item.stamp;
@@ -109,16 +106,25 @@
             initDom.on("mousedown", () => {
               this.mouseResult = true;
               this.cloneDom = initDom;
-              this.ArrPosition.map((item, index) => {
-                if (item.stamp == this.cloneDom.attr("data-stamp")) {
+              console.log(item);
+              this.ArrPosition.map((items, index) => {
+                if (items.stamp == this.cloneDom.attr("data-stampInit")) {
                   this.ArrPosition.splice(index, 1);
                 }
               });
+              let preObj = JSON.parse(localStorage.ArrData);
+              preObj.data.map((itemTwo) => {
+                if (item.stamp == itemTwo.stamp) {
+                  itemTwo.pre = "true";
+                }
+              });
+              localStorage.ArrData = JSON.stringify(preObj);
             });
             this.saveJson = {};
+            /**把删除的节点添加到克隆出来的节点当中**/
+            jquery("<i class='fa close fa-times'><i/>").appendTo(initDom);
             /**删除按钮的点击事件**/
             initDom.find(".fa").on("click", (e) => {
-              console.log(initDom.attr("data-stamp"), item.stamp);
               e.stopPropagation();
               initDom.attr("data-pre", "true");
               if (localStorage.ArrData) {
@@ -135,18 +141,17 @@
               this.ArrPosition.map((item, index) => {
                 if (item.stamp == this.cloneDom.attr("data-stamp")) {
                   this.ArrPosition.splice(index, 1);
-
                 }
               });
             });
           });
-
         }
       });
 
     },
     methods: {
       ...mapActions(["getDataS"]),
+      /**获取当前日期**/
       actDate(index, index2) {
         if ((+this.nowDay + this.firstData - 1) == (index * 7 + index2)) {
           return "nowDay"
@@ -239,8 +244,8 @@
             });
           });
           this.cloneDom.css({"left": event.clientX - 70, "top": event.clientY - 30}).show();
-        }
 
+        }
       }
       ,
 
@@ -311,6 +316,7 @@
             this.saveDom.push(this.saveJson);
           }
         );
+        console.log(this.domArr2);
         //对象数组去重
         let hash = {};
         this.saveDom = this.saveDom.reduce((item, next) => {
@@ -343,8 +349,7 @@
 
     },
     computed: {
-      ...
-        mapState(["infoData"])
+      ...mapState(["infoData"])
     }
   }
 </script>
