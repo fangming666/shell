@@ -33,6 +33,7 @@
         nowMonth: "",
         nowDay: "",
         firstData: "",
+        lastData: "",
         allDay: "",
         propDay: [],
         nextDay: [],
@@ -70,6 +71,7 @@
       this.nowDay = date.getDate();
       this.firstData = new Date(`${this.nowYear}-${this.nowMonth}-01`).getDay();
       this.allDay = new Date(this.nowYear, this.nowMonth, 0).getDate();
+      this.lastData = 7 - (35 - this.allDay - this.firstData);
       let propAll = new Date(this.nowYear, this.nowMonth - 1, 0).getDate();
       for (let i = 0; i < this.firstData; i++) {
         this.propDay.unshift(propAll - i);
@@ -205,7 +207,7 @@
         this.X = event.clientX;
         this.Y = event.clientY;
         //对鼠标位置进行的判断，然后确定是都打开开关（设定移动的范围）
-        if ((event.clientX <= 60 + this.boxWidth * this.firstData + this.initLeft && event.clientY <= this.boxHeight + this.initTop + 89) || event.clientY <= 89 + this.initTop && this.X < jquery(".date").width() + this.initLeft + 20 || event.clientX >= this.boxWidth * this.firstData + this.initLeft - 20 && event.clientY >= this.boxHeight * 4 + this.initTop + 69 && this.X < jquery(".date").width() + this.initLeft + 20 && event.clientY < this.boxHeight * 5 + this.initTop + 89 || this.X < this.initLeft) {
+        if ((event.clientX <= 60 + this.boxWidth * this.firstData + this.initLeft && event.clientY <= this.boxHeight + this.initTop + 89) || event.clientY <= 89 + this.initTop && this.X < jquery(".date").width() + this.initLeft + 20 || event.clientX >= this.boxWidth * this.lastData + this.initLeft - 20 && event.clientY >= this.boxHeight * 4 + this.initTop + 69 && this.X < jquery(".date").width() + this.initLeft + 20 || this.X < this.initLeft) {
           this.mouseResult = false;
         }
 
